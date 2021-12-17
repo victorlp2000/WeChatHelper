@@ -23,30 +23,37 @@ class UI_Chats:
             return button
         return None
 
-    def chat_to(win, name):
+    def chat_to(win, member):
         # if there is no name, chat to self
-        if name == None:
+        if member == None:
             return UI_User.chat_to(win)
 
+        logger.info('chat_to "%s<%s>"', member['name'], member['WeChatID'])
         # search from chat name list
-        if UI_Chats.search_name(win, name) == True:
-            return True
+        if ('WeChatID' in member) and (not member['WeChatID'].startswith('wxid_')):
+            if UI_Chats.search_name(win, member, True) == True:
+                if UI_Chats.verify_title(win, member['name']) == True:
+                    return True
+
+        if UI_Chats.search_name(win, member, False) == True:
+            if UI_Chats.verify_title(win, member['name']) == True:
+                return True
 
         return False
 
-        '''
-        # if we cannot find the name from search, try to search from
-        # contacts list
-        # click '+' ("Start Group Chat Button") to open the dialog
-        logger.info('did not get %s from chat search, try contacts', name)
-        button = win.child_window(title='Start Group Chat', control_type='Button')
-        UI_Comm.click_control(button)
 
-        if Dlg_AddMember.add_member(win, name) == False:
-            logger.warning('not in contacts: %s', name)
-            return False
-        return True
-        '''
+    # retuns the last message
+    def get_last_msg(win, member):
+        if not UI_Chats.chat_to(win, member):
+            return None
+
+        text = None
+        # find '消息' List
+        list = win.child_window(title=u'消息', control_type='List')
+        items = list.children(control_type='ListItem')
+        if len(items) > 0:
+            text = items[-1].window_text()
+        return text
 
     def select_item(win, item):
         one_by_one = win.child_window(title='One-by-One Forward', control_type='Text')
@@ -67,10 +74,9 @@ class UI_Chats:
         # win.print_control_identifiers(filename='tt2.txt')
         # input('wwwwww')
 
-    def select_last_sention_msgs(win, group):
+    def select_last_sention_msgs(win):
         msgs = 0
-        if UI_Chats.chat_to(win, group) == False:
-            logger.warning('cannot switch to "%s"', group)
+        if UI_Chats.chat_to(win, None) == False:
             return msgs
         list = win.child_window(title=u'消息', control_type='List')
         items = list.children(control_type='ListItem')
@@ -105,8 +111,8 @@ class UI_Chats:
         button = forward.parent().children()[0]
         UI_Comm.click_control(button)
 
-    def forward_msgs(win, group, contacts, index):
-        if UI_Chats.select_last_sention_msgs(win, group) == 0:
+    def forward_msgs(win, contacts, index):
+        if UI_Chats.select_last_sention_msgs(win) == 0:
             return index
         UI_Chats.forward_one_by_one(win)
         dlg = Dlg_Forward.get_forward_dlg(win)
@@ -114,29 +120,40 @@ class UI_Chats:
             return index
         while index < len(contacts):
             contact = contacts[index]
-            Dlg_Forward.add_member(dlg, contact['name'], contact['WeChatID'])
+            name = contact['name']
+            if 'WeChatID' in contact:
+                id = contact['WeChatID']
+            else:
+                id = None
+            Dlg_Forward.add_member(dlg, name, id)
             index += 1
             if Dlg_Forward.number_selected(dlg) >= 9:
                 break
         Dlg_Forward.click_send(dlg)
         return index
 
-    def search_name(win, name):
-        logger.info('search group name "%s"', name)
+    def search_name(win, member, by_id):
+        # logger.info('search name "%s", by_id=%s', member['name'], by_id)
         search = UI_Chats.set_focus_search(win)
         # entering [name] in edit box, then 'Enter'
-        UI_Comm.send_text(search, name, False)
+        if by_id:
+            if 'WeChatID' in member:
+                UI_Comm.send_text(search, member['WeChatID'], False)
+            else:
+                return False
+        else:
+            UI_Comm.send_text(search, member['name'], False)
 
-        retry = 3
+        retry = 5   # need to more than 3 times
         while retry > 0:
             retry -= 1
             list = win.child_window(title='Search Results', control_type='List')
             if list.exists():
                 break
-            time.sleep(0.3)   # wait to get searh results
+            time.sleep(0.2)   # wait to get searh results
 
         if not list.exists():
-            logger.warninig('did not find search result')
+            logger.warning('did not find search result')
             return False
 
         # check if there is the name in search results
@@ -153,27 +170,41 @@ class UI_Chats:
                 category = texts[0]
             else:
                 if category == 'Group Chats' or category == 'Contacts':
-                    if item.window_text() == name:
+                    if item.window_text() == member['name']:
                         UI_Comm.click_control(item)
                         found = True
                         break
         if not found:
-            logger.warning('did not find named group "%s"', name)
+            logger.warning('did not find named/group "%s"', member['name'])
             return False
+        return True
 
-        # double check
-        time.sleep(1)   # wait search result gets ready
-        return UI_Chats.verify_title(win, name)
-
-    def verify_title(win, name):
-        pane = win
+    def get_title_pane(pane):
         for i in [1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]:
             cs = pane.children()
+            # expected pane does not exists
+            if len(cs) <= i:
+                return None
             pane = cs[i]
+        return pane
+
+    def verify_title(win, name):
+        # logger.info('verify title <%s>', name)
+        retry = 10
+        while retry > 0:
+            retry -= 1
+            pane = UI_Chats.get_title_pane(win)
+            if pane != None:
+                break
+            time.sleep(0.2)
+
+        if pane == None:
+            return False
 
         pane.draw_outline()
         if pane.window_text() != name:
             logger.warning('verifying title failed "%s"', name)
+            return False
         return True
 
     # click the edit box

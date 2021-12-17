@@ -17,7 +17,7 @@ from member_info import Members, Cache
 logger = getMyLogger(__name__)
 
 '''
-    邀请朋友加入群聊
+    群成员合并
 '''
 class Action_MergeGroupMembers:
     def merge_group_members(win, settings):
@@ -29,13 +29,13 @@ class Action_MergeGroupMembers:
 
         members = []
 
-        groups = settings['include_groups']
-        for name in groups:
+        include = settings['include_groups']
+        for name in include:
             data = Utils.from_json_file(folder+name+'.json')
             members = Action_MergeGroupMembers.insert_members(members, data['members'])
 
-        groups = settings['exclude_groups']
-        for name in groups:
+        exclude = settings['exclude_groups']
+        for name in exclude:
             data = Utils.from_json_file(folder+name+'.json')
             if data == None:
                 print(name)
@@ -45,6 +45,8 @@ class Action_MergeGroupMembers:
            "group_name": save_to,
            "time": Utils.get_time_now(),
            "size": len(members),
+           "include": include,
+           "exclude": exclude,
            "members": members
         }
         Utils.to_json_file(data, folder+save_to+'.json')

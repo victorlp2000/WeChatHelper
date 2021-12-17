@@ -30,7 +30,7 @@ class Action_InviteFriends:
         cache_data = Cache(user_info)
 
         group = settings['from_group']
-        if UI_Chats.chat_to(win, group) != True:
+        if UI_Chats.chat_to(win, {'name':group}) != True:
             return
 
         text = settings['invite_text']

@@ -1,0 +1,11 @@
+---
+actions:
+  invite_join_group:
+    # 邀请朋友加入的群名
+    to_group: "2【BRI】+【阿兹海默症協会】"
+
+    # 群成员名单所在的目录
+    folder: ".\\history\\group_members\\"
+
+    # 邀请的成员名单
+    member_group: "merged"

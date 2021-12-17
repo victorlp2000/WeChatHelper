@@ -17,6 +17,7 @@ from actions.list_contacts import Action_ListContacts
 from actions.invite_join_group import Action_InviteJoinGroup
 from actions.forward_msg import Action_ForwardMsg
 from actions.merge_group_members import Action_MergeGroupMembers
+from actions.get_last_msg import Action_GetLastMsg
 import pywinauto
 
 def main(setting_file):
@@ -34,7 +35,7 @@ def main(setting_file):
     # raise window on top
     win.set_focus()
 
-    pywinauto.timings.Timings.fast()
+    # pywinauto.timings.Timings.fast()
     # pywinauto.timings.Timings.window_find_timeout = 0.2
 
     # before doing any action, make sure there is no sub-windows in open,
@@ -61,7 +62,9 @@ def main(setting_file):
         Action_ForwardMsg.forward_msg(win, actions['forward_msg'])
     if 'merge_group_members' in actions:
         Action_MergeGroupMembers.merge_group_members(win, actions['merge_group_members'])
-        
+    if 'get_last_msg' in actions:
+        Action_GetLastMsg.get_last_msg(win, actions['get_last_msg'])
+
     logger.info('no more actions')
     # update_history()
     # accept_new_friends(win)

@@ -21,9 +21,9 @@ def getMyLogger(name=None, fn=None, level=None):
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
-        logfn = 'logs\\'+os.path.basename(fn).replace('.json', '.log')
-        handler = RotatingFileHandler(logfn, mode='a', encoding='utf-8', maxBytes=100000, backupCount=1)
-        # handler = logging.FileHandler(logfn, 'a', 'utf-8')
+        logfn = 'logs\\'+os.path.splitext(os.path.basename(fn))[0]+'.log'
+        # handler = RotatingFileHandler(logfn, mode='a', encoding='utf-8', maxBytes=100000, backupCount=1)
+        handler = logging.FileHandler(logfn, mode='w', encoding='utf-8')
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 

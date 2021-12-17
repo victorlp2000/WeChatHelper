@@ -20,7 +20,8 @@ class UI_WeChatPane:
         # if not pane.exists() and member != None:
             # open member card
         # logger.info('click member...')
-        UI_Comm.click_control(member)
+        if member != None:
+            UI_Comm.click_control(member)
 
         retry = 5
         while retry > 0:

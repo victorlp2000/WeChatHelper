@@ -5,7 +5,8 @@ actions:
     folder: ".\\history\\group_members\\"
 
     # 邀请朋友加入的群名
-    save_to: "merged"
+    save_to: "forward"
+    # save_to: "merged"
 
     # 邀请的成员名单
     include_groups:
@@ -14,5 +15,5 @@ actions:
     # 不包括的成员名单
     exclude_groups:
     - "blacklist"
-    - "1【BRI】+【阿兹海默症協会】"
-    - "2【BRI】+【阿兹海默症協会】"
+    # - "1【BRI】+【阿兹海默症協会】"
+    # - "2【BRI】+【阿兹海默症協会】"

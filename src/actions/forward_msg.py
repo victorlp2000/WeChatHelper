@@ -17,31 +17,23 @@ from member_info import Members, Cache
 logger = getMyLogger(__name__)
 
 '''
-    广播发送所有人
+    转发: 从本人的聊天记录中选取最后一组内容，转发到指定的名单
 '''
 class Action_ForwardMsg:
     def forward_msg(win, settings):
         logger.info('action: "forward_msg"')
 
-        user_info = UI_User.get_user_info(win)
-        if user_info == None:
-            return
+        folder = settings['folder']
+        name = settings['member_group']
 
-        if 'to' in settings:
-            contacts = settings['to']
-        else:
-            contacts = Members(user_info, 'contacts.json').data
-
-        if 'from' in settings:
-            group = settings['from']
-        else:
-            group = None
+        data = Utils.from_json_file(folder+name+'.json')
+        contacts = data['members']
 
         UI_Chats.click_chats_button(win)
 
         index = 0
         while index < len(contacts):
-            index1 = UI_Chats.forward_msgs(win, group, contacts, index)
+            index1 = UI_Chats.forward_msgs(win, contacts, index)
             if index1 == index:
                 logger.warning('stop forwarding')
                 break

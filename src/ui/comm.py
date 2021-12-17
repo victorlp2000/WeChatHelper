@@ -36,7 +36,7 @@ class UI_Comm:
 
         # parse text
         control.type_keys(Utils.parse_keys(text), pause=0)
-        time.sleep(1)   # have to delay short time, or 'Enter' does not work!
+        time.sleep(0.2)   # have to delay short time, or 'Enter' does not work!
         if control.get_value() != text:
             # for input method
             control.type_keys('{ENTER}')

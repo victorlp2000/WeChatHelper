@@ -78,6 +78,7 @@ class Utils:
                 parsed += '^{ENTER}'
             else:
                 parsed += c
+        # logger.info('<%s><%s>', text, parsed)
         return parsed
 
     def get_img_key(img):

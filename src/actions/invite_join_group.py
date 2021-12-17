@@ -17,37 +17,32 @@ from member_info import Members, Cache
 logger = getMyLogger(__name__)
 
 '''
-    从通信录中邀请朋友加入群聊
+    邀请朋友加入群聊
 '''
 class Action_InviteJoinGroup:
     def invite_join_group(win, settings):
         logger.info('action: "invite_join_group"')
 
-        user_info = UI_User.get_user_info(win)
-        if user_info == None:
-            return
-        contacts = Members(user_info, 'contacts.json').data
-        cache_data = Cache(user_info)
+        folder = settings['folder']
+        name = settings['member_group']
 
+        data = Utils.from_json_file(folder+name+'.json')
+        contacts = data['members']
+
+        # 切换到要加入的群
         group = settings['to_group']
-        if UI_Chats.chat_to(win, group) != True:
+        if UI_Chats.chat_to(win, {'name':group}) != True:
             return
 
-        tags = settings['tags']
-
-        cache_item = 'invite_join_group.'+group
-        index = cache_data.get(cache_item)
-        if index == None:
-            index = 0
+        index = 0
         while index < len(contacts):
-            index1 = Action_InviteJoinGroup.invite(win, contacts, tags, index)
+            index1 = Action_InviteJoinGroup.invite(win, contacts, index)
             if index1 == index:
                 logger.warning('cannot continue')
                 break
-            cache_data.set(cache_item, index)
             index = index1
 
-    def invite(win, contacts, tags, index):
+    def invite(win, contacts, index):
         r_index = index     # for return
         pwin = UI_ChatInfo.open_chat_info(win)
         if pwin == None:
@@ -65,13 +60,11 @@ class Action_InviteJoinGroup:
         while r_index < len(contacts):
             contact = contacts[r_index]
             r_index += 1
-            if contact['tag'] in tags:
-                logger.info('%s -- %s', contact['name'], contact['WeChatID'])
-                Dlg_AddMember.add_member(dlg, contact['name'], contact['WeChatID'])
+            Dlg_AddMember.add_member(dlg, contact['name'], contact['WeChatID'])
             if Dlg_AddMember.number_selected(dlg) >= limit:
                 break
 
-        manual = True
+        manual = False
         if manual:
             input('enter to continue...' + str(r_index))
         else:

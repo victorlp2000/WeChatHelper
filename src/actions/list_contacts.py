@@ -18,16 +18,32 @@ class Action_ListContacts:
     def list_contacts(win, settings):
         logger.info('action: "list_contacts"')
 
-        UI_Contacts.click_contacts_button(win)
-        contacts = UI_Contacts.get_contacts(win)
+        types = {
+            'groups': settings['groups'],
+            'contacts': settings['contacts']
+            }
 
-        data = {
+        UI_Contacts.click_contacts_button(win)
+        contacts = UI_Contacts.get_contacts(win, types)
+
+        contacts_data = {
             'group_name': 'Contacts',
             'time': Utils.get_time_now(),
-            'size': len(contacts),
-            'members': contacts
-        }
-        filename = settings['save_to'] + 'contacts.json'
-        Utils.to_json_file(data, filename)
+            'size': len(contacts['contacts']),
+            'members': contacts['contacts']
+            }
+        groups_data = {
+            'group_name': 'Saved Groups',
+            'time': Utils.get_time_now(),
+            'size': len(contacts['saved_groups']),
+            'members': contacts['saved_groups']
+            }
+        if types['contacts']:
+            filename = settings['save_to'] + 'contacts.json'
+            Utils.to_json_file(contacts_data, filename)
+            logger.info('number of contacts: %d', contacts_data['size'])
 
-        logger.info('number of contacts: %d', len(contacts))
+        if types['groups']:
+            filename = settings['save_to'] + 'saved_groups.json'
+            Utils.to_json_file(groups_data, filename)
+            logger.info('number of groups: %d', groups_data['size'])

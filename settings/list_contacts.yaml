@@ -1,7 +1,14 @@
-# 功能：导出通讯录中的人员信息, 保存到指定的目录
+# 功能：导出通讯录中的信息, 保存到指定的目录
 ---
 actions:
   list_contacts:
-  
+
     # save to folder (end with path delimiter)
     save_to: ".\\history\\group_members\\"
+
+    # 生成 saved_groups.json
+    # 须把群设置为“保存到通讯录”才能出现在这个名单中
+    groups: True
+
+    # 生成 contacts.json
+    contacts: False

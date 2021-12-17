@@ -18,7 +18,9 @@ class Dlg_Forward:
 
     # returns number of selected
     def add_member(dlg, name, id=None):
-        r = Dlg_Forward.search_unique(dlg, id)
+        r = False
+        if id != None:
+            r = Dlg_Forward.search_unique(dlg, id)
         if r == False:
             r = Dlg_Forward.search_unique(dlg, name)
         if r == True:
@@ -38,6 +40,8 @@ class Dlg_Forward:
 
         # if the name exists, it must have only 1 candidate and 1 selected
         n1 = Dlg_Forward.number_candidate(dlg)
+        # print(n1)
+        # input('wait...')
         if n1 != 1:
             edit.type_keys('{ENTER}')   # de-select
         return n1 == 1
@@ -53,6 +57,7 @@ class Dlg_Forward:
     def number_candidate(dlg):
         pane = dlg.children()[1].children()[0]
         list = pane.children(control_type='List')
+        print('list:', len(list))
         if len(list) != 1:
             return 0
         # number of items under 'Contacts'
@@ -62,13 +67,15 @@ class Dlg_Forward:
         for item in items:
             # 'pywinauto.controls.uia_controls.ListItemWrapper'
             if type(item) is pywinauto.controls.uiawrapper.UIAWrapper:
-                if item.children()[0].window_text() == 'Contacts':
+                category = item.children()[0].window_text()
+                if category == 'Contacts' or category == 'Group Chats':
                     start = True
                 else:
                     start = False
                 continue
             if start:
                 n += 1
+        print('n:', n)
         return n
 
     def number_selected(dlg):

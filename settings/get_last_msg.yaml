@@ -1,0 +1,10 @@
+---
+  actions:
+    get_last_msg:
+
+      # 群成员名单所在的目录
+      folder: ".\\history\\group_members\\"
+
+      # 成员名单
+      member_group: "forward"
+      # member_group: "contacts"

@@ -5,6 +5,7 @@ actions:
   list_group_members:
     groups:
     - "1【BRI】+【阿兹海默症協会】"
-    - "VIP陪画Brian182009学习群"
+    - "2【BRI】+【阿兹海默症協会】"
+    
     # 保存Json文件目录，文件名：<群名>
     save_to: ".\\history\\group_members\\"

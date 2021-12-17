@@ -21,13 +21,7 @@ class Action_ListGroupMembers:
         groups = settings['groups']
         for group in groups:
             members = Action_ListGroupMembers.list_members(win, group)
-            if 'update_member' in settings and settings['update_member'] == True:
-                user_info = UI_User.get_user_info(win)
-                member_data = Members(user_info)
-                for m in members:
-                    m['groups'] = [group]
-                    # m['invited'] = Utils.get_time_now()
-                    member_data.update_member(m)
+
             if 'save_to' in settings:
                 filename = settings['save_to'] + group + '.json'
                 data = {
@@ -39,7 +33,7 @@ class Action_ListGroupMembers:
                 Utils.to_json_file(data, filename)
 
     def list_members(win, group):
-        if UI_Chats.chat_to(win, group) != True:
+        if UI_Chats.chat_to(win, {'name':group}) != True:
             return None
         # open 'chat info' window
         pwin = UI_ChatInfo.open_chat_info(win)

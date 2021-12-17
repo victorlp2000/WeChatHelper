@@ -30,7 +30,7 @@ class UI_Contacts:
         return list
 
     # return array of contacts or None
-    def get_contacts(win, picks=None):
+    def get_contacts(win, types, picks=None):
         # press contacts menu
         if UI_Contacts.click_contacts_button(win) == None:
             return None
@@ -39,12 +39,31 @@ class UI_Contacts:
         UI_Comm.click_control(list)
         # goto top of the list
         list.type_keys('^{HOME}')
-
+        # list_control = list.wrapper_object()
+        # print(dir(list.wrapper_object()))
+        # input('wait...')
         contacts = []
+        saved_groups = []
         last_info = {}
-        limit = 5
-        while limit > 0:
-            # limit -= 1
+        category = 'Initial'
+
+        while True:
+            items = list.children(control_type='ListItem')
+            for i in range(len(items)):
+                if items[i].is_selected():
+                    if i > 0 and items[i-1].window_text() == '':
+                        category = items[i-1].children()[0].children()[0].window_text()
+                        logger.info('category: "%s"', category)
+                    if category == 'Saved Groups':
+                        saved_groups.append({'name':items[i].window_text()})
+
+            if category in ['Initial', 'New Friends', 'Official Accounts', 'Saved Groups']:
+                list.type_keys('{DOWN}')
+                continue
+
+            if types['contacts'] != True:
+                break
+
             info = UI_Contacts.get_contact_info(win)
             if info != None:
                 if info == last_info:
@@ -59,8 +78,7 @@ class UI_Contacts:
                     contacts.append(data)
                 last_info = info
             list.type_keys('{DOWN}')
-
-        return contacts
+        return {'contacts':contacts, 'saved_groups':saved_groups}
 
     def get_contact_info(win):
         id = win.child_window(title='WeChat ID', control_type='Text')

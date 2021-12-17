@@ -1,0 +1,25 @@
+---
+  actions:
+    # # get contacts
+    # list_contacts:
+    #   # save to folder (end with path delimiter)
+    #   save_to: ".\\history\\group_members\\"
+    #
+    # merge_group_members:
+    #   # 群成员名单所在的目录
+    #   folder: ".\\history\\group_members\\"
+    #   # 邀请朋友加入的群名
+    #   save_to: "forward"
+    #   # save_to: "merged"
+    #   # 邀请的成员名单
+    #   include_groups:
+    #   - "contacts"
+    #   # 不包括的成员名单
+    #   exclude_groups:
+    #   - "blacklist"
+
+    forward_msg:
+      # 群成员名单所在的目录
+      folder: ".\\history\\group_members\\"
+      # 转发的成员名单
+      member_group: "forward"
