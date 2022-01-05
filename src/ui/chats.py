@@ -111,7 +111,7 @@ class UI_Chats:
         button = forward.parent().children()[0]
         UI_Comm.click_control(button)
 
-    def forward_msgs(win, contacts, index):
+    def forward_msgs(win, category, contacts, index):
         if UI_Chats.select_last_sention_msgs(win) == 0:
             return index
         UI_Chats.forward_one_by_one(win)
@@ -125,7 +125,7 @@ class UI_Chats:
                 id = contact['WeChatID']
             else:
                 id = None
-            Dlg_Forward.add_member(dlg, name, id)
+            Dlg_Forward.add_member(dlg, category, name, id)
             index += 1
             if Dlg_Forward.number_selected(dlg) >= 9:
                 break

@@ -11,4 +11,4 @@ actions:
     groups: True
 
     # 生成 contacts.json
-    contacts: False
+    contacts: True

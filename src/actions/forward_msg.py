@@ -25,6 +25,7 @@ class Action_ForwardMsg:
 
         folder = settings['folder']
         name = settings['member_group']
+        category = settings['category']
 
         data = Utils.from_json_file(folder+name+'.json')
         contacts = data['members']
@@ -33,7 +34,7 @@ class Action_ForwardMsg:
 
         index = 0
         while index < len(contacts):
-            index1 = UI_Chats.forward_msgs(win, contacts, index)
+            index1 = UI_Chats.forward_msgs(win, category, contacts, index)
             if index1 == index:
                 logger.warning('stop forwarding')
                 break

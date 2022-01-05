@@ -3,5 +3,9 @@
     forward_msg:
       # 群成员名单所在的目录
       folder: ".\\history\\group_members\\"
+
+      # 'Contacts' or 'Group Chats'
+      category: "Group Chats"
+      
       # 转发的成员名单
       member_group: "saved_groups"
