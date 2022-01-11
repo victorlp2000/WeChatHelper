@@ -1,9 +1,12 @@
-# 功能：列出微信群里所有的成员，存到指定的地方
-# 如果目录下有同名文件，旧的文件将被覆盖
+# 功能：检查群里每个成员，找出是否已经出现在所列的群里
+#  ！所有群数据必须已经存在
 ---
 actions:
-  list_group_members:
-    groups:
+  find_same_member:
+    # 所有群数据已经存放在这个目录下
+    folder: "history\\group_info\\"
+
+    list_groups:
     - name: "【BRI】0️⃣全球公益讲堂Dr.Jiang"
       id: "bri_0"
 
@@ -27,11 +30,11 @@ actions:
 
     - name: "【BRI】9️⃣全球公益Dr.Jiang"
       id: "bri_9"
-
+      
     - name: "【BRI】1️⃣5️⃣新冠新变种"
       id: "bri_15"
 
+    # 核查下列每一个群组成员，是否已经在上面任何一个群里
+    check_groups:
     - name: "【BRI】1️⃣3️⃣新冠新变种二"
       id: "bri_13"
-
-    save: "history\\group_info\\"

@@ -28,7 +28,7 @@ class UI_Chats:
         if member == None:
             return UI_User.chat_to(win)
 
-        logger.info('chat_to "%s<%s>"', member['name'], member['WeChatID'])
+        logger.info('chat_to "%s"', member['name'])
         # search from chat name list
         if ('WeChatID' in member) and (not member['WeChatID'].startswith('wxid_')):
             if UI_Chats.search_name(win, member, True) == True:

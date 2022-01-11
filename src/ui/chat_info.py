@@ -141,6 +141,33 @@ class UI_ChatInfo:
             #     break
         return members
 
+    def get_members_fast(pwin, win, picks):
+        logger.info('get members from group')
+        # view more suppose to list ALL members
+        UI_ChatInfo.view_more(pwin)
+
+        members = []
+        list = pwin.window(title='Members', control_type='List')
+        items = list.children(control_type='ListItem')
+        logger.info('%d members in the list', len(items))
+
+        for item in items:
+            item.draw_outline()
+            name = item.window_text()
+            if name == 'Add' or name == 'Delete':
+                continue
+
+            UI_ChatInfo.scroll_in_view(list, item)
+
+            # get image
+            button = item.children()[0].children()[0].children()[1]
+            img = button.capture_as_image()
+            members.append({'name':name, 'img':img})
+            # n = len(members)
+            # if n > 20:
+            #     break
+        return members
+
     def get_announcement(pwin):
         p = pwin.window(title='Group Notice', control_type='Text').parent()
         pane = p.children(control_type='Pane')[0]

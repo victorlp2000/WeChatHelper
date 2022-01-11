@@ -2,3 +2,5 @@
 *
 # Except this file
 !.gitignore
+!group_members
+!group_members/blacklist.json

@@ -19,28 +19,29 @@ class Action_ListGroupMembers:
     def list_group_members(win, settings):
         logger.info('action: "list_group_members"')
         groups = settings['groups']
-        for group in groups:
-            members = Action_ListGroupMembers.list_members(win, group)
+        save = settings['save']
 
-            if 'save_to' in settings:
-                filename = settings['save_to'] + group + '.json'
-                data = {
-                    "group_name": group,
-                    "time": Utils.get_time_now(),
-                    "size": len(members),
-                    "members": members
-                }
-                Utils.to_json_file(data, filename)
+        for group in groups:
+            folder = save + group['name'] + '\\'
+            os.makedirs(folder, exist_ok=True)
+            members = Action_ListGroupMembers.list_members(win, group)
+            meta = []
+            for m in members:
+                imgfile = group['id'] + '_' + str(members.index(m)+1) + '.png'
+                m['img'].save(folder + imgfile, format='png')
+                meta.append({'name':m['name'], 'img':imgfile})
+            filename = folder + group['id'] + '.json'
+            Utils.to_json_file(meta, filename)
 
     def list_members(win, group):
-        if UI_Chats.chat_to(win, {'name':group}) != True:
+        if UI_Chats.chat_to(win, {'name':group['name']}) != True:
             return None
         # open 'chat info' window
         pwin = UI_ChatInfo.open_chat_info(win)
         if pwin == None:
             return None
 
-        members = UI_ChatInfo.get_members(pwin, win, [''])
+        members = UI_ChatInfo.get_members_fast(pwin, win, ['*'])
 
         UI_ChatInfo.close_chat_info(win)
         return members

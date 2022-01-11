@@ -18,6 +18,7 @@ from actions.invite_join_group import Action_InviteJoinGroup
 from actions.forward_msg import Action_ForwardMsg
 from actions.merge_group_members import Action_MergeGroupMembers
 from actions.get_last_msg import Action_GetLastMsg
+from actions.find_same_member import Action_FindSameMember
 import pywinauto
 
 def main(setting_file):
@@ -64,6 +65,8 @@ def main(setting_file):
         Action_MergeGroupMembers.merge_group_members(win, actions['merge_group_members'])
     if 'get_last_msg' in actions:
         Action_GetLastMsg.get_last_msg(win, actions['get_last_msg'])
+    if 'find_same_member' in actions:
+        Action_FindSameMember.find_same_member(win, actions['find_same_member'])
 
     logger.info('no more actions')
     # update_history()
