@@ -17,19 +17,19 @@ class Dlg_Forward:
         return dlg
 
     # returns number of selected
-    def add_member(dlg, name, id=None):
+    def add_member(dlg, category, name, id=None):
         r = False
         if id != None:
-            r = Dlg_Forward.search_unique(dlg, id)
+            r = Dlg_Forward.search_unique(dlg, category, id)
         if r == False:
-            r = Dlg_Forward.search_unique(dlg, name)
+            r = Dlg_Forward.search_unique(dlg, category, name)
         if r == True:
             logger.info('select forward: "%s"', name)
         else:
             logger.warning('could not find "%s:%s"', name, id)
         return r
 
-    def search_unique(dlg, text):
+    def search_unique(dlg, category, text):
         # put name in 'Search Edit' field
         edit = dlg.child_window(title='Search', control_type='Edit')
 
@@ -39,7 +39,7 @@ class Dlg_Forward:
         UI_Comm.send_text(edit, text)
 
         # if the name exists, it must have only 1 candidate and 1 selected
-        n1 = Dlg_Forward.number_candidate(dlg)
+        n1 = Dlg_Forward.number_candidate(dlg, category)
         # print(n1)
         # input('wait...')
         if n1 != 1:
@@ -54,10 +54,10 @@ class Dlg_Forward:
         button = dlg.window(title='Cancel', control_type='Button')
         UI_Comm.click_control(button)
 
-    def number_candidate(dlg):
+    def number_candidate(dlg, category):
         pane = dlg.children()[1].children()[0]
         list = pane.children(control_type='List')
-        print('list:', len(list))
+        # print('list:', len(list))
         if len(list) != 1:
             return 0
         # number of items under 'Contacts'
@@ -67,8 +67,8 @@ class Dlg_Forward:
         for item in items:
             # 'pywinauto.controls.uia_controls.ListItemWrapper'
             if type(item) is pywinauto.controls.uiawrapper.UIAWrapper:
-                category = item.children()[0].window_text()
-                if category == 'Contacts' or category == 'Group Chats':
+                c = item.children()[0].window_text()
+                if c == category:   # 'Contacts' or 'Group Chats'
                     start = True
                 else:
                     start = False
