@@ -1,0 +1,54 @@
+<html>
+<head>
+  <script src="./my_script.js"></script>
+  <style>
+    .pane {
+      display: inline;
+      height: 100%;
+    }
+    .hdiv {
+      display: inline-flex;
+      resize: horizontal;
+      overflow: auto;
+      border: 1px solid;
+      height: 100%;
+    }
+    .left {
+      width: 30%;
+    }
+    .right {
+      width: 69%;
+    }
+    .tarea {
+      width: 100%;
+      height: 100%;
+      overflow-x: scroll;
+      white-space: pre;
+      overflow-wrap: normal;
+    }
+  </style>
+  <meta charset="UTF-8">
+<body>
+  <div style="background:#00ff00;">
+    <select class="" id="action" onchange="on_action_change()">
+      <option value="none">select function</option>
+      <option value="list_contacts">list contacts</option>
+      <option value="list_saved_groups">list saved groups</option>
+    </select>
+    <input type="submit" id="run" value="Run" onclick="on_run_clicked()">
+  </div>
+  <div style="background:#ff0000; height:80%; white-space:nowrap; overflow-x:visible;">
+    <div class="left hdiv">
+      <textarea class="tarea" id="settings">
+== settings ==
+      </textarea>
+    </div>
+    <div class="right hdiv">
+      <textarea class="tarea" id="log" disabled="true">
+== log ==
+      </textarea>
+    </div>
+  </div>
+  <div> text messages </div>
+</body>
+</html>
